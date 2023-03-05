@@ -9,7 +9,7 @@ import tvm.auto_scheduler as auto_scheduler
 
 
 def convert_onnx_to_relay(model_path: str):
-    shape_dict = {"input_ids": (1, 1, 128)}
+    shape_dict = {"input_ids": (1, 128)}
     onnx_model = onnx.load(model_path)
     mod, params = relay.frontend.from_onnx(onnx_model, shape_dict)
     return mod, params

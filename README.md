@@ -9,6 +9,18 @@ onnx infer 100 times - Elapsed time: 5424.8796 ms
 
 ov infer first time - Elapsed time: 62.4363 ms
 ov infer 100 times - Elapsed time: 4584.5890 ms
+
+# untuned
+tvm infer first time - Elapsed time: 210.2444 ms
+tvm infer 1000 times - Elapsed time: 141982.3859 ms
+
+# autotvm tuned
+tvm infer first time - Elapsed time: 136.5185 ms
+tvm infer 1000 times - Elapsed time: 57310.9915 ms
+
+# autoscheduler tuned
+tvm infer first time - Elapsed time: 147.0437 ms
+tvm infer 1000 times - Elapsed time: 147388.9692 ms
 ```
 
 
@@ -27,11 +39,37 @@ docker run -it\
            nvcr.io/nvidia/tritonserver:22.09-pyt-python-py3
 
 # install llvm-15
-bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"'
+bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
 # install onednn
+# download from here https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#onednn
+wget https://registrationcenter-download.intel.com/akdlm/irc_nas/19137/l_onednn_p_2023.0.0.25399_offline.sh
 
-# install onednn previous version that compatible with tvm
+# install onednn previous version via pip that compatible with tvm
+pip3 install onednn-devel-cpu-tbb==2022.2.0
 
 # build tvm
+git clone --recursive https://github.com/apache/tvm tvm
+
+# edit cmake/config.cmake
+
+# turn llvm on
+# set(USE_LLVM llvm-config-15)
+
+# turn dnnl on and add include directory
+# set(USE_DNNL /usr/local/)
+# include_directories(/usr/local/include/)
+
+mkdir build
+cd build
+cp ../cmake/config.cmake  .
+pip3 install cmake
+cmake ..
+make -j48
+
+# export TVM Path to PYTHONPATH
+export PYTHONPATH=$(pwd)/python
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/opt/intel/oneapi/compiler/2023.0.0/linux/compiler/lib/intel64_lin/
+pip3 install decorator onnx psutil scipy attrs
+pip3 install xgboost==1.5.2  # the version must lower than specified version due to compatibility
 ```
