@@ -11,16 +11,16 @@ ov infer first time - Elapsed time: 62.4363 ms
 ov infer 100 times - Elapsed time: 4584.5890 ms
 
 # untuned
-tvm infer first time - Elapsed time: 210.2444 ms
-tvm infer 1000 times - Elapsed time: 141982.3859 ms
+tvm infer first time - Elapsed time: 277.3764 ms
+tvm infer 100 times - Elapsed time: 14279.5329 ms
 
 # autotvm tuned
-tvm infer first time - Elapsed time: 136.5185 ms
-tvm infer 1000 times - Elapsed time: 57310.9915 ms
+tvm infer first time - Elapsed time: 83.5037 ms
+tvm infer 100 times - Elapsed time: 4824.3027 ms
 
 # autoscheduler tuned
-tvm infer first time - Elapsed time: 147.0437 ms
-tvm infer 1000 times - Elapsed time: 147388.9692 ms
+tvm infer first time - Elapsed time: 194.1788 ms
+tvm infer 100 times - Elapsed time: 14470.1133 ms
 ```
 
 

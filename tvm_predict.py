@@ -53,7 +53,7 @@ def tvm_infer(module, input_name, input_ids, times):
     return outputs
 
 
-times = 1000
+times = 100
 max_len = 128
 target = "llvm -libs=dnnl"
 save_path = "save_dir"
