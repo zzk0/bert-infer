@@ -1,3 +1,9 @@
 .pkl_memoize_py3
 test_trainer
 save_dir
+bert-autotuning.json
+bert-autoscheduler-tuning.json
+triton_models/bert_openvino/1/model.bin
+triton_models/bert_openvino/1/model.mapping
+triton_models/bert_openvino/1/model.xml
+total_latency.tsv

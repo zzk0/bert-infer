@@ -30,7 +30,41 @@ triton infer first time - Elapsed time: 225.9994 ms
 triton infer 100 times - Elapsed time: 2751.7860 ms
 ```
 
+## How to run
 
+1. prepare the directory that save the model
+
+```bash
+mkdir -p save_dir/hf
+mkdir -p save_dir/onnx
+mkdir -p save_dir/ov
+mkdir -p save_dir/tvm
+```
+
+2. finetune the model
+
+```bash
+python3 train.py
+```
+
+3. convert the model to onnx, openvino, tvm relay
+
+```bash
+python3 onnx_convert.py
+sh openvino_convert.sh
+python3 tvm_convert.py
+bash triton_server_deploy.sh
+```
+
+4. predict benchmark
+
+```
+python3 torch_predict.py
+python3 onnx_predict.py
+python3 openvino_predict.py
+python3 tvm_predict.py
+python3 triton_predict.py
+```
 
 # tvm
 
