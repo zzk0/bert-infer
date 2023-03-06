@@ -1,12 +1,15 @@
 # bert infer
 
 ```
+# pytorch
 torch infer first time - Elapsed time: 67.9009 ms
 torch infer 100 times - Elapsed time: 5852.7300 ms
 
+# onnxruntime
 onnx infer first time - Elapsed time: 57.4057 ms
 onnx infer 100 times - Elapsed time: 5424.8796 ms
 
+# openvino + python frontend
 ov infer first time - Elapsed time: 62.4363 ms
 ov infer 100 times - Elapsed time: 4584.5890 ms
 
@@ -21,7 +24,12 @@ tvm infer 100 times - Elapsed time: 4824.3027 ms
 # autoscheduler tuned
 tvm infer first time - Elapsed time: 194.1788 ms
 tvm infer 100 times - Elapsed time: 14470.1133 ms
+
+# triton server infer with openvino backend
+triton infer first time - Elapsed time: 225.9994 ms
+triton infer 100 times - Elapsed time: 2751.7860 ms
 ```
+
 
 
 # tvm
@@ -70,6 +78,11 @@ make -j48
 # export TVM Path to PYTHONPATH
 export PYTHONPATH=$(pwd)/python
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/opt/intel/oneapi/compiler/2023.0.0/linux/compiler/lib/intel64_lin/
-pip3 install decorator onnx psutil scipy attrs
+pip3 install decorator onnx psutil scipy attrs tornado cloudpickle
 pip3 install xgboost==1.5.2  # the version must lower than specified version due to compatibility
+
+# download tophub manunally
+git clone https://github.com/tlc-pack/tophub
+cp -r tophub/tophub/ ~/.t
 ```
+

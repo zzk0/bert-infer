@@ -123,10 +123,10 @@ tvm_lib_path = os.path.join(save_path, "tvm")
 mod, params = convert_onnx_to_relay(onnx_save_path)
 
 lib = build_tvm_lib(mod, params, target)
-save_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm"))
+save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tvm.so"))
 
 lib = build_tuned_lib(mod, params, target)
-save_tvm_lib(os.path.join(tvm_lib_path, "bert_tune_tvm"))
+save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
 
 lib = build_auto_scheduler_tuned_lib(mod, params, target)
-save_tvm_lib(os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm"))
+save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))

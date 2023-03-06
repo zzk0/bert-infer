@@ -1,0 +1,23 @@
+name: "bert_openvino"
+backend: "openvino"
+input [
+  {
+    name: "input_ids"
+    data_type: TYPE_INT32
+    dims: [ 1, 128 ]
+  }
+]
+output [
+  {
+    name: "1537"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  }
+]
+instance_group [
+  {
+    count: 1
+    kind: KIND_CPU
+  }
+]
+

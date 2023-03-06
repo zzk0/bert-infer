@@ -5,6 +5,7 @@
 # mkdir -p save_dir/hf
 # mkdir -p save_dir/onnx
 # mkdir -p save_dir/ov
+# mkdir -p save_dir/tvm
 
 # # train
 # python3 train.py

@@ -57,26 +57,32 @@ times = 100
 max_len = 128
 target = "llvm -libs=dnnl"
 save_path = "save_dir"
-input_name = "onnx::Gather_0"
+input_name = "input_ids"
 tvm_lib_path = os.path.join(save_path, "tvm")
-input_sample = [i for i in range(3000, 3000 + max_len - 2)]
-input_sample = [101, *input_sample, 102]
-input_sample = np.array([[input_sample]])
+input_ids = [i for i in range(3000, 3000 + max_len - 2)]
+input_ids = [101, *input_ids, 102]
+input_ids = np.array([input_ids])
 
-# untune lib
-lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm.tar"))
-module = build_tvm_module(target, lib)
-outputs = tvm_infer(module, input_name, input_sample, times)
-print(outputs[0])
+# # untune lib
+# lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm.so"))
+# module = build_tvm_module(target, lib)
+# outputs = tvm_infer(module, input_name, input_ids, times)
+# print(outputs[0])
 
-# autotvm tuned
-lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm_tuned.tar"))
-module = build_tvm_module(target, lib)
-outputs = tvm_infer(module, input_name, input_sample, times)
-print(outputs[0])
+# # autotvm tuned
+# lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
+# module = build_tvm_module(target, lib)
+# outputs = tvm_infer(module, input_name, input_ids, times)
+# print(outputs[0])
 
 # autoscheduler tuned
-lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm_autoscheduler_tuned.tar"))
+lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))
 module = build_tvm_module(target, lib)
-outputs = tvm_infer(module, input_name, input_sample, times)
+outputs = tvm_infer(module, input_name, input_ids, times)
 print(outputs[0])
+
+dev = tvm.device(str(target), 0)
+module.set_input(input_name, input_ids)
+module.benchmark(dev, repeat=3, min_repeat_ms=500)
+print("Evaluate inference time cost...")
+print(module.benchmark(dev, repeat=3, min_repeat_ms=500))
