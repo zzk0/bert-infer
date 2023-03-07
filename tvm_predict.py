@@ -1,23 +1,8 @@
-import contextlib
 import os
-import time
 import tvm
 import numpy as np
 from tvm.contrib import graph_executor
-
-
-@contextlib.contextmanager
-def timer(message: str = ""):
-    start_time = time.time()
-    try:
-        yield
-    finally:
-        end_time = time.time()
-        print(
-            "{} - Elapsed time: {:.4f} ms".format(
-                message, (end_time - start_time) * 1000
-            )
-        )
+from utils import timer
 
 
 def load_tvm_lib(lib_path: str):

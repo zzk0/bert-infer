@@ -1,22 +1,6 @@
-import contextlib
-import os
-import time
 import numpy as np
 import tritonclient.http as httpclient
-
-
-@contextlib.contextmanager
-def timer(message: str = ""):
-    start_time = time.time()
-    try:
-        yield
-    finally:
-        end_time = time.time()
-        print(
-            "{} - Elapsed time: {:.4f} ms".format(
-                message, (end_time - start_time) * 1000
-            )
-        )
+from utils import timer
 
 
 def send_ids(triton_client, service_name, input_ids):

@@ -1,23 +1,7 @@
-import contextlib
 import numpy as np
 import openvino.runtime as ov
 import os
-import time
-
-
-@contextlib.contextmanager
-def timer(message: str = ""):
-    start_time = time.time()
-    try:
-        yield
-    finally:
-        end_time = time.time()
-        print(
-            "{} - Elapsed time: {:.4f} ms".format(
-                message, (end_time - start_time) * 1000
-            )
-        )
-
+from utils import timer
 
 def load_ov_model(model_path):
     core = ov.Core()

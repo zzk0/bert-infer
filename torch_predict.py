@@ -3,20 +3,7 @@ import os
 import torch
 import time
 from transformers import AutoModelForSequenceClassification
-
-
-@contextlib.contextmanager
-def timer(message: str = ""):
-    start_time = time.time()
-    try:
-        yield
-    finally:
-        end_time = time.time()
-        print(
-            "{} - Elapsed time: {:.4f} ms".format(
-                message, (end_time - start_time) * 1000
-            )
-        )
+from utils import timer
 
 
 def torch_infer(model, input_ids, times):
