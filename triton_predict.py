@@ -1,6 +1,6 @@
 import numpy as np
 import tritonclient.http as httpclient
-from utils import timer
+from utils import timer, build_parser
 
 
 def send_ids(triton_client, service_name, input_ids):
@@ -26,10 +26,13 @@ def triton_infer(triton_client, service_name, input_ids, times):
 
 
 if __name__ == '__main__':
+    parser = build_parser("tritonserver_openvino_predict")
+    args = parser.parse_args()
+    max_len = args.max_len
+    times = args.times
+
     triton_client = httpclient.InferenceServerClient(url='127.0.0.1:8000')
     service_name = "bert_openvino"
-    times = 100
-    max_len = 128
     input_ids = [i for i in range(3000, 3000 + max_len - 2)]
     input_ids = [101, *input_ids, 102]
     input_ids = np.array([input_ids]).astype(np.int32)

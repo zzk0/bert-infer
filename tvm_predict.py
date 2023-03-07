@@ -2,7 +2,7 @@ import os
 import tvm
 import numpy as np
 from tvm.contrib import graph_executor
-from utils import timer
+from utils import timer, build_parser
 
 
 def load_tvm_lib(lib_path: str):
@@ -38,36 +38,35 @@ def tvm_infer(module, input_name, input_ids, times):
     return outputs
 
 
-times = 100
-max_len = 128
-target = "llvm -libs=dnnl"
-save_path = "save_dir"
-input_name = "input_ids"
-tvm_lib_path = os.path.join(save_path, "tvm")
-input_ids = [i for i in range(3000, 3000 + max_len - 2)]
-input_ids = [101, *input_ids, 102]
-input_ids = np.array([input_ids])
+if __name__ == "__main__":
+    parser = build_parser("tvm_predict")
+    args = parser.parse_args()
+    max_len = args.max_len
+    times = args.times
 
-# # untune lib
-# lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm.so"))
-# module = build_tvm_module(target, lib)
-# outputs = tvm_infer(module, input_name, input_ids, times)
-# print(outputs[0])
+    target = "llvm -libs=dnnl"
+    save_path = "save_dir"
+    input_name = "input_ids"
+    tvm_lib_path = os.path.join(save_path, "tvm")
+    input_ids = [i for i in range(3000, 3000 + max_len - 2)]
+    input_ids = [101, *input_ids, 102]
+    input_ids = np.array([input_ids])
 
-# # autotvm tuned
-# lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
-# module = build_tvm_module(target, lib)
-# outputs = tvm_infer(module, input_name, input_ids, times)
-# print(outputs[0])
+    # untune lib
+    lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tvm.so"))
+    module = build_tvm_module(target, lib)
+    outputs = tvm_infer(module, input_name, input_ids, times)
+    print(outputs[0])
 
-# autoscheduler tuned
-lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))
-module = build_tvm_module(target, lib)
-outputs = tvm_infer(module, input_name, input_ids, times)
-print(outputs[0])
+    # autotvm tuned
+    lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
+    module = build_tvm_module(target, lib)
+    outputs = tvm_infer(module, input_name, input_ids, times)
+    print(outputs[0])
 
-dev = tvm.device(str(target), 0)
-module.set_input(input_name, input_ids)
-module.benchmark(dev, repeat=3, min_repeat_ms=500)
-print("Evaluate inference time cost...")
-print(module.benchmark(dev, repeat=3, min_repeat_ms=500))
+    # autoscheduler tuned
+    lib = load_tvm_lib(os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))
+    module = build_tvm_module(target, lib)
+    outputs = tvm_infer(module, input_name, input_ids, times)
+    print(outputs[0])
+

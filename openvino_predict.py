@@ -1,7 +1,8 @@
 import numpy as np
 import openvino.runtime as ov
 import os
-from utils import timer
+from utils import timer, build_parser
+
 
 def load_ov_model(model_path):
     core = ov.Core()
@@ -33,14 +34,18 @@ def ov_infer(ov_model, input_ids, times):
 
 
 
-times = 100
-max_len = 128
-save_path = "save_dir"
-onnx_save_path = os.path.join(save_path, "ov", "model.xml")
-ov_model = load_ov_model(onnx_save_path)
-input_sample = [i for i in range(3000, 3000 + max_len - 2)]
-input_sample = [101, *input_sample, 102]
-input_sample = np.array([input_sample])
-outputs = ov_infer(ov_model, input_sample, times)
-print(outputs[0])
+if __name__ == '__main__':
+    parser = build_parser("openvino_predict")
+    args = parser.parse_args()
+    max_len = args.max_len
+    times = args.times
+
+    save_path = "save_dir"
+    onnx_save_path = os.path.join(save_path, "ov", "model.xml")
+    ov_model = load_ov_model(onnx_save_path)
+    input_sample = [i for i in range(3000, 3000 + max_len - 2)]
+    input_sample = [101, *input_sample, 102]
+    input_sample = np.array([input_sample])
+    outputs = ov_infer(ov_model, input_sample, times)
+    print(outputs[0])
 

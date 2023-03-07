@@ -6,10 +6,11 @@ import tvm.relay as relay
 from tvm import autotvm
 from tvm.autotvm.tuner import XGBTuner
 import tvm.auto_scheduler as auto_scheduler
+from utils import build_parser
 
 
-def convert_onnx_to_relay(model_path: str):
-    shape_dict = {"input_ids": (1, 128)}
+def convert_onnx_to_relay(model_path: str, max_len: int):
+    shape_dict = {"input_ids": (1, max_len)}
     onnx_model = onnx.load(model_path)
     mod, params = relay.frontend.from_onnx(onnx_model, shape_dict)
     return mod, params
@@ -115,18 +116,22 @@ def build_auto_scheduler_tuned_lib(mod, params, target):
     return lib
 
 
-max_len = 128
-target = "llvm -libs=dnnl"
-save_path = "save_dir"
-onnx_save_path = os.path.join(save_path, "onnx/model.onnx")
-tvm_lib_path = os.path.join(save_path, "tvm")
-mod, params = convert_onnx_to_relay(onnx_save_path)
+if __name__ == "__main__":
+    parser = build_parser("tvm_convert")
+    args = parser.parse_args()
+    max_len = args.max_len
 
-lib = build_tvm_lib(mod, params, target)
-save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tvm.so"))
+    target = "llvm -libs=dnnl"
+    save_path = "save_dir"
+    onnx_save_path = os.path.join(save_path, "onnx/model.onnx")
+    tvm_lib_path = os.path.join(save_path, "tvm")
+    mod, params = convert_onnx_to_relay(onnx_save_path, max_len)
 
-lib = build_tuned_lib(mod, params, target)
-save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
+    lib = build_tvm_lib(mod, params, target)
+    save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tvm.so"))
 
-lib = build_auto_scheduler_tuned_lib(mod, params, target)
-save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))
+    lib = build_tuned_lib(mod, params, target)
+    save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
+
+    lib = build_auto_scheduler_tuned_lib(mod, params, target)
+    save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))
