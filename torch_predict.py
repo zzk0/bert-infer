@@ -1,7 +1,5 @@
-import contextlib
 import os
 import torch
-import time
 from transformers import AutoModelForSequenceClassification
 from utils import timer, build_parser
 

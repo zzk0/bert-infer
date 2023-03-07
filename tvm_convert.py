@@ -123,8 +123,8 @@ if __name__ == "__main__":
 
     target = "llvm -libs=dnnl"
     save_path = "save_dir"
-    onnx_save_path = os.path.join(save_path, "onnx/model.onnx")
-    tvm_lib_path = os.path.join(save_path, "tvm")
+    onnx_save_path = os.path.join(save_path, "onnx", str(max_len), "model.onnx")
+    tvm_lib_path = os.path.join(save_path, str(max_len), "tvm")
     mod, params = convert_onnx_to_relay(onnx_save_path, max_len)
 
     lib = build_tvm_lib(mod, params, target)

@@ -47,7 +47,7 @@ if __name__ == "__main__":
     target = "llvm -libs=dnnl"
     save_path = "save_dir"
     input_name = "input_ids"
-    tvm_lib_path = os.path.join(save_path, "tvm")
+    tvm_lib_path = os.path.join(save_path, "tvm", str(max_len))
     input_ids = [i for i in range(3000, 3000 + max_len - 2)]
     input_ids = [101, *input_ids, 102]
     input_ids = np.array([input_ids])

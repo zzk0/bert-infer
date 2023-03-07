@@ -31,7 +31,7 @@ if __name__ == '__main__':
     times = args.times
 
     save_path = "save_dir"
-    onnx_save_path = os.path.join(save_path, "onnx", "model.onnx")
+    onnx_save_path = os.path.join(save_path, "onnx", str(max_len), "model.onnx")
     ort_sess = load_onnx_sess(onnx_save_path)
     input_sample = [i for i in range(3000, 3000 + max_len - 2)]
     input_sample = [101, *input_sample, 102]
