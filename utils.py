@@ -6,7 +6,7 @@ import time
 def build_parser(name):
     parser = argparse.ArgumentParser(description="Command line interface for {}".format(name))
     parser.add_argument("--max_len", type=int, default=128, help="The maximum length of input sequence")
-    parser.add_argument("--times", type=int, default=100, help="The measure times")
+    parser.add_argument("--times", type=int, default=1000, help="The measure times")
     return parser
 
 

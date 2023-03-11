@@ -50,7 +50,7 @@ def load_tvm_lib(lib_path: str):
     return loaded_lib
 
 
-def build_tuned_lib(mod, params, target):
+def build_tuned_lib(mod, params, target, log_file : str):
     number = 10  # 一次实验中测速的次数
     repeat = 1  # 重复实验次数
     min_repeat_ms = 0  # 调优 CPU 时设置为 0
@@ -73,7 +73,7 @@ def build_tuned_lib(mod, params, target):
         "measure_option": autotvm.measure_option(
             builder=autotvm.LocalBuilder(build_func="default"), runner=runner
         ),
-        "tuning_records": "bert-autotuning.json",
+        "tuning_records": log_file,
     }
 
     # 首先从 onnx 模型中提取任务
@@ -100,8 +100,7 @@ def build_tuned_lib(mod, params, target):
     return lib
 
 
-def build_auto_scheduler_tuned_lib(mod, params, target):
-    log_file = "bert-autoscheduler-tuning.json"
+def build_auto_scheduler_tuned_lib(mod, params, target, log_file: str):
     tasks, task_weights = auto_scheduler.extract_tasks(mod["main"], params, target)
     tuner = auto_scheduler.TaskScheduler(tasks, task_weights)
     tune_option = auto_scheduler.TuningOptions(
@@ -124,14 +123,16 @@ if __name__ == "__main__":
     target = "llvm -libs=dnnl"
     save_path = "save_dir"
     onnx_save_path = os.path.join(save_path, "onnx", str(max_len), "model.onnx")
-    tvm_lib_path = os.path.join(save_path, str(max_len), "tvm")
+    tvm_lib_path = os.path.join(save_path, "tvm", str(max_len))
     mod, params = convert_onnx_to_relay(onnx_save_path, max_len)
 
     lib = build_tvm_lib(mod, params, target)
     save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tvm.so"))
 
-    lib = build_tuned_lib(mod, params, target)
+    log_file = os.path.join(tvm_lib_path, "bert-autotuning.json")
+    lib = build_tuned_lib(mod, params, target, log_file)
     save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_tune_tvm.so"))
 
-    lib = build_auto_scheduler_tuned_lib(mod, params, target)
+    log_file = os.path.join(tvm_lib_path, "bert-autoscheduler-tuning.json")
+    lib = build_auto_scheduler_tuned_lib(mod, params, target, log_file)
     save_tvm_lib(lib, os.path.join(tvm_lib_path, "bert_autoschduler_tune_tvm.so"))
